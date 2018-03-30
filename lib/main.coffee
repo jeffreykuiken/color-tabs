@@ -28,6 +28,12 @@ module.exports = new class Main
       type: "string"
       default: "none"
       enum: ["corner","round","square","none"]
+    colorSelection:
+      title: "Colors"
+      description: "With random, a random color is assigned every time you color a tab. With deterministic, the color is based on the path of the file, so each file has a specific and predictable color."
+      type: "string"
+      default: "random"
+      enum: ["random","deterministic"]
     debug:
       type: "integer"
       default: 0

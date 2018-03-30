@@ -5,6 +5,7 @@ colorFile = atom.getConfigDirPath()+"#{sep}color-tabs.cson"
 colors = {}
 colorChangeCb = null
 cssElements = {}
+hashbow = require("hashbow")
 
 
 
@@ -140,6 +141,19 @@ getRandomColor= ->
     color += letters[Math.floor(Math.random() * 16)]
   return color
 
+getDeterministicColor= (path) ->
+  return hashbow(path)
+
+getColorForPath= (path, getSaved=false) ->
+  switch atom.config.get "color-tabs.colorSelection"
+    when 'random'
+      if getSaved && colors[path]
+        return colors[path]
+      else
+        return getRandomColor()
+    when 'deterministic'
+      return getDeterministicColor(path)
+
 processPath= (path,color,revert=false,save=false,warn=false) ->
   unless path?
     if warn
@@ -188,7 +202,7 @@ processAllTabs= (revert=false)->
   log "found #{paths.length} different paths with color of
     total #{paneItems.length} paneItems",2
   for path in paths
-    processPath path, colors[path], revert
+    processPath path, getColorForPath(path, getSaved=true), revert
   return !revert
 
 
@@ -216,7 +230,7 @@ class ColorTabs
         'color-tabs:color-current-tab': =>
           te = atom.workspace.getActiveTextEditor()
           if te?.getPath?
-            @color te.getPath(), getRandomColor(), true, true
+            @color te.getPath(), getColorForPath(te.getPath()), true, true
           else
             atom.notifications.addWarning "coloring is only possible for file tabs"
         'color-tabs:uncolor-current-tab': =>
@@ -227,6 +241,7 @@ class ColorTabs
       @disposables.add atom.config.observe("color-tabs.borderStyle",@repaint)
       @disposables.add atom.config.observe("color-tabs.borderSize",@repaint)
       @disposables.add atom.config.observe("color-tabs.markerStyle",@repaint)
+      @disposables.add atom.config.observe("color-tabs.colorSelection",@repaint)
     log "loaded"
   color: (path, color, save=true, warn=false) ->
     processPath path, color, !color, save, warn

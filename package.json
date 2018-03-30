@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "atom-simple-logger": "~0.0.1",
-    "season": "^5.3.0"
+    "season": "^5.3.0",
+    "hashbow": "1.1.1"
   },
   "dev-dependencies": {
     "atom-package-reloader": "~0.0.2"
