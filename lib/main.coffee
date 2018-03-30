@@ -34,6 +34,11 @@ module.exports = new class Main
       type: "string"
       default: "random"
       enum: ["random","deterministic"]
+    autoColor:
+      title: "Color new tabs automatically"
+      description: "If enabled, every new tab you open will automatically be colored."
+      type: 'boolean'
+      default: false
     debug:
       type: "integer"
       default: 0

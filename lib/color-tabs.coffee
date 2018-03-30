@@ -221,7 +221,11 @@ class ColorTabs
         @processed = processAllTabs()
     unless @disposables?
       @disposables = new CompositeDisposable
-      @disposables.add atom.workspace.onDidAddTextEditor ->
+      @disposables.add atom.workspace.onDidAddTextEditor (event) ->
+        if atom.config.get("color-tabs.autoColor")
+          te = event.textEditor
+          if te?.getPath?
+            processPath te.getPath(), getColorForPath(te.getPath()), false, true
         setTimeout processAllTabs, 10
       @disposables.add atom.workspace.onDidDestroyPaneItem ->
         setTimeout processAllTabs, 10
